@@ -12,8 +12,9 @@ ENV JAVA_OPTS="-Xms256m -Xmx512m -Dplatform=railway"
 ENV TB_LOAD_DEMO=false
 
 # Copy initialization script
-COPY init-db.sh /usr/share/thingsboard/bin/init-db.sh
-RUN chmod +x /usr/share/thingsboard/bin/init-db.sh
+WORKDIR /tmp
+COPY init-db.sh /tmp/
+RUN chmod +x /tmp/init-db.sh
 
 # Expose necessary ports
 EXPOSE 8080 1883 5683/udp
@@ -23,4 +24,4 @@ HEALTHCHECK --interval=30s --timeout=30s --start-period=120s --retries=3 \
   CMD curl -f http://localhost:8080/ || exit 1
 
 # Set entry point
-CMD ["/usr/share/thingsboard/bin/init-db.sh"] 
+CMD ["/bin/bash", "/tmp/init-db.sh"] 
