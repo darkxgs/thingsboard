@@ -1,29 +1,30 @@
 app = "thingsboard-demo"
 
 [build]
-  image = "thingsboard/tb-postgres:latest"
+  dockerfile = "Dockerfile.flyio"
 
 [env]
   TB_QUEUE_TYPE = "in-memory"
-  SPRING_DATASOURCE_URL = "jdbc:postgresql://thingsboard-pg.internal:5432/thingsboard"
-  SPRING_DATASOURCE_USERNAME = "postgres"
-  SPRING_DATASOURCE_PASSWORD = "postgres"
+  JAVA_OPTS = "-Xms128m -Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -XX:MaxRAM=600m"
+  TB_LOAD_DEMO = "false"
 
 [http_service]
   internal_port = 8080
   force_https = true
+  auto_stop_machines = false
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ["app"]
 
-  [[http_service.ports]]
-    port = 80
-    handlers = ["http"]
-
-  [[http_service.ports]]
-    port = 443
-    handlers = ["tls", "http"]
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 512
 
 [[services]]
   protocol = "tcp"
   internal_port = 1883
+  processes = ["app"]
 
   [[services.ports]]
     port = 1883
@@ -31,6 +32,7 @@ app = "thingsboard-demo"
 [[services]]
   protocol = "udp"
   internal_port = 5683
+  processes = ["app"]
 
   [[services.ports]]
     port = 5683 

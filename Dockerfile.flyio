@@ -1,0 +1,36 @@
+# Use a more lightweight JDK base image
+FROM eclipse-temurin:17-jre-jammy
+
+# Set environment variables
+ENV TB_QUEUE_TYPE=in-memory
+ENV JAVA_OPTS="-Xms128m -Xmx512m -XX:+UseG1GC -XX:MaxRAM=600m"
+ENV TB_LOAD_DEMO=false
+ENV TB_VERSION=4.0.1
+ENV DATA_FOLDER=/data
+ENV HSQLDB_DATA_DIR=/data/db
+ENV HTTP_BIND_PORT=8080
+ENV DATABASE_TS_TYPE=sql
+ENV PGDATA=/data/db
+
+# Install dependencies
+RUN apt-get update && apt-get install -y postgresql wget unzip procps netcat-openbsd \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create necessary directories
+RUN mkdir -p /data/db /thingsboard/config /thingsboard/log
+
+# Download and extract ThingsBoard
+WORKDIR /thingsboard
+RUN wget -q https://github.com/thingsboard/thingsboard/releases/download/v${TB_VERSION}/thingsboard-${TB_VERSION}.deb \
+    && dpkg -i thingsboard-${TB_VERSION}.deb \
+    && rm thingsboard-${TB_VERSION}.deb
+
+# Copy init script
+COPY flyio-start.sh /thingsboard/
+RUN chmod +x /thingsboard/flyio-start.sh
+
+# Default ports
+EXPOSE 8080 1883 5683/udp
+
+# Start service
+CMD ["/thingsboard/flyio-start.sh"] 
