@@ -1,0 +1,3 @@
+[plugins."postgresql"]
+[plugins."postgresql".settings]
+version = "12" 
