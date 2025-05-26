@@ -4,7 +4,7 @@ set -e
 echo "Starting ThingsBoard initialization..."
 
 # Memory optimization
-export JAVA_OPTS="${JAVA_OPTS} -Dinstall.load_demo=false -Dspring.jpa.hibernate.ddl-auto=none -Dinstall.upgrade=false"
+export JAVA_OPTS="${JAVA_OPTS} -Xms256m -Xmx512m -Dinstall.load_demo=false -Dspring.jpa.hibernate.ddl-auto=none -Dinstall.upgrade=false"
 
 echo "Using Java options: $JAVA_OPTS"
 
@@ -19,9 +19,9 @@ for i in {1..30}; do
   sleep 2
 done
 
-# Create database if it doesn't exist
+# Create database if it doesn't exist (PostgreSQL syntax)
 echo "Ensuring database exists..."
-PGPASSWORD=$SPRING_DATASOURCE_PASSWORD psql -h postgres -U postgres -c "CREATE DATABASE IF NOT EXISTS thingsboard"
+PGPASSWORD=$SPRING_DATASOURCE_PASSWORD psql -h postgres -U postgres -tc "SELECT 1 FROM pg_database WHERE datname = 'thingsboard'" | grep -q 1 || PGPASSWORD=$SPRING_DATASOURCE_PASSWORD psql -h postgres -U postgres -c "CREATE DATABASE thingsboard"
 
 # Run the initialization script
 echo "Initializing ThingsBoard database..."
