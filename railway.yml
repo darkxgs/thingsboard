@@ -2,9 +2,21 @@ services:
   thingsboard:
     dockerfile: Dockerfile.direct
     healthcheck:
-      path: /api/v1/status
-      interval: 30s
-      timeout: 10s
+      path: /login/processing
+      interval: 60s
+      timeout: 30s
+      grace_period: 600s
     resources:
       cpu: 2
-      memory: 512mb 
+      memory: 512mb
+    env:
+      - key: JAVA_OPTS
+        value: "-Xms64m -Xmx256m -XX:+ExitOnOutOfMemoryError -XX:+UseG1GC"
+      - key: TB_QUEUE_TYPE
+        value: in-memory
+      - key: DATABASE_TS_TYPE
+        value: hsql
+      - key: TB_LOAD_DEMO
+        value: "false"
+      - key: SPRING_JPA_HIBERNATE_DDL_AUTO
+        value: update 
