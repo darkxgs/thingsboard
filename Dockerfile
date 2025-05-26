@@ -21,7 +21,7 @@ RUN chmod +x /thingsboard/railway-start.sh
 
 # Download and extract ThingsBoard minimal jar (just the core without extras)
 RUN apk add --no-cache wget unzip \
-    && wget -q -O tb.jar https://github.com/thingsboard/thingsboard/releases/download/v${TB_VERSION}/thingsboard-${TB_VERSION}-boot.jar \
+    && wget -q -O tb.jar https://github.com/thingsboard/thingsboard/releases/download/v${TB_VERSION}/thingsboard-${TB_VERSION}.jar \
     && chmod +x tb.jar
 
 # Configure HSQLDB for minimal usage
