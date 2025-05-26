@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+      - 1883:1883
+      - 5683:5683/udp
+    commands:
+      - /thingsboard/railway-start.sh
+    resources:
+      memory_mb: 512 
