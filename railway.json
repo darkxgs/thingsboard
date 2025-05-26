@@ -8,8 +8,8 @@
     "numReplicas": 1,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10,
-    "startCommand": "start-tb.sh",
-    "healthcheckPath": "/login",
+    "startCommands": ["/thingsboard/railway-start.sh"],
+    "healthcheckPath": "/api/v1/status",
     "healthcheckTimeout": 300
   }
 } 
