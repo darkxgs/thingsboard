@@ -1,0 +1,36 @@
+app = "thingsboard-demo"
+
+[build]
+  image = "thingsboard/tb-postgres:latest"
+
+[env]
+  TB_QUEUE_TYPE = "in-memory"
+  SPRING_DATASOURCE_URL = "jdbc:postgresql://thingsboard-pg.internal:5432/thingsboard"
+  SPRING_DATASOURCE_USERNAME = "postgres"
+  SPRING_DATASOURCE_PASSWORD = "postgres"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+
+  [[http_service.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[http_service.ports]]
+    port = 443
+    handlers = ["tls", "http"]
+
+[[services]]
+  protocol = "tcp"
+  internal_port = 1883
+
+  [[services.ports]]
+    port = 1883
+
+[[services]]
+  protocol = "udp"
+  internal_port = 5683
+
+  [[services.ports]]
+    port = 5683 
