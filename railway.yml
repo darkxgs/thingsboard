@@ -1,0 +1,10 @@
+services:
+  thingsboard:
+    dockerfile: Dockerfile.direct
+    healthcheck:
+      path: /api/v1/status
+      interval: 30s
+      timeout: 10s
+    resources:
+      cpu: 2
+      memory: 512mb 
